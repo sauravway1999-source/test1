@@ -56,3 +56,100 @@ void loop() {
   Blynk.run();
   timer.run(); // Keeps the timer running smoothly
 }
+
+
+
+
+/* 
+//mq135 attached in the above code 
+
+#define BLYNK_TEMPLATE_ID "TMPL3XlmqXUio"
+#define BLYNK_TEMPLATE_NAME "Weather Monitoring"
+#define BLYNK_AUTH_TOKEN    "bMSNnuxRc1xgtC9Wsbpg-Y8CC6DV2a_G"
+
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
+
+// WiFi Configuration
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "realme C55";
+char pass[] = "Saurav@1234";
+
+// DHT11 Configuration
+#define DHTPIN D2          // Pin D2 on ESP8266
+#define DHTTYPE DHT11     // Defining the sensor type
+DHT dht(DHTPIN, DHTTYPE);
+
+// MQ135 Configuration
+const int mq135Pin = A0;   // Analog input pin for gas sensor
+
+BlynkTimer timer;
+
+// Function to send all sensor data to Blynk Datastreams
+void sendSensorData() {
+  // 1. Read DHT11 Sensor
+  float h = dht.readHumidity();
+  float t = dht.readTemperature(); // Temperature in Celsius
+
+  // Check if DHT reading failed
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+  } else {
+    // Send data to Virtual Pins (V0 for Temp, V1 for Humidity)
+    Blynk.virtualWrite(V0, t);
+    Blynk.virtualWrite(V1, h);
+    
+    // Log DHT data to Serial Monitor
+    Serial.print("Temp: ");
+    Serial.print(t);
+    Serial.print(" °C | Humidity: ");
+    Serial.print(h);
+    Serial.println(" %");
+  }
+
+  // 2. Read MQ135 Gas Sensor
+  int airQualityValue = analogRead(mq135Pin); // Read analog value (0 - 1023)
+
+  // Send Air Quality data to Blynk Virtual Pin V2
+  Blynk.virtualWrite(V2, airQualityValue);
+
+  // Log MQ135 data to Serial Monitor
+  Serial.print("Air Quality Value: ");
+  Serial.print(airQualityValue);
+  
+  // Decide if air is clean or polluted
+  if (airQualityValue > 400) {
+    Serial.println(" -> Alert: Bad Air Quality!");
+  } else {
+    Serial.println(" -> Air Quality: Normal");
+  }
+  Serial.println("------------------------------------");
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+  Serial.println("Initializing system...");
+  
+  // Initialize sensors
+  pinMode(mq135Pin, INPUT);
+  dht.begin();
+  
+  // Connect to Blynk
+  Blynk.begin(auth, ssid, pass);
+
+  // Run the combined data function every 2 seconds
+  timer.setInterval(2000L, sendSensorData);
+}
+
+void loop() {
+  Blynk.run();
+  timer.run(); // Keeps the data sending without freezing Blynk
+}
+
+*/
+
+
+
