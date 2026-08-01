@@ -1,3 +1,5 @@
+//DHT11 code
+
 #include <DHT.h>
 
 #define DHTPIN D2       // Pin connected to D2
