@@ -1,0 +1,58 @@
+#define BLYNK_TEMPLATE_ID "TMPL3XlmqXUio"
+#define BLYNK_TEMPLATE_NAME "Weather Monitoring"
+#define BLYNK_AUTH_TOKEN    "bMSNnuxRc1xgtC9Wsbpg-Y8CC6DV2a_G"
+
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
+
+// WiFi Configuration
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "realme C55";
+char pass[] = "Saurav@1234";
+
+// DHT11 Configuration
+#define DHTPIN D2          // Pin D4 on most ESP8266 NodeMCU boards is GPIO2
+#define DHTTYPE DHT11     // Defining the sensor type
+DHT dht(DHTPIN, DHTTYPE);
+
+BlynkTimer timer;
+
+// Function to send sensor data to Blynk Datastreams
+void sendSensorData() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature(); // Temperature in Celsius
+
+  // Check if reading failed
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  // Send data to Virtual Pins (V1 for Temp, V2 for Humidity)
+  Blynk.virtualWrite(V0, t);
+  Blynk.virtualWrite(V1, h);
+  
+  // Log to Serial Monitor
+  Serial.print("Temp: ");
+  Serial.print(t);
+  Serial.print(" °C | Humidity: ");
+  Serial.print(h);
+  Serial.println(" %");
+}
+
+void setup() {
+  Serial.begin(115200);
+  
+  dht.begin();
+  Blynk.begin(auth, ssid, pass);
+
+  // Setup a timer to run the sendSensorData function every 2 seconds
+  timer.setInterval(2000L, sendSensorData);
+}
+
+void loop() {
+  Blynk.run();
+  timer.run(); // Keeps the timer running smoothly
+}
