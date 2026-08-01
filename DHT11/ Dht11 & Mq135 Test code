@@ -1,0 +1,52 @@
+#include <DHT.h>
+
+#define DHTPIN D2       // Pin connected to D2
+#define DHTTYPE DHT11  // Using the DHT11 sensor
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);  // Start Serial Monitor
+  dht.begin();         // Start the sensor
+}
+
+void loop() {
+  delay(2000);         // Wait 2 seconds
+
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature(); // In Celsius
+
+  // Print results to the Serial Monitor
+  Serial.print("Temp: ");
+  Serial.print(temperature);
+  Serial.print(" °C | Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+}
+
+/* 
+//Code for Mq135 sensor test
+const int sensorPin = A0; // ESP8266 Analog Pin
+
+void setup() {
+  pinMode(sensorPin,INPUT);
+  Serial.begin(115200);   // Initialize serial monitor
+  delay(1000);
+  Serial.println("MQ135 Gas Sensor Warming Up...");
+}
+
+void loop() {
+  int sensorValue = analogRead(sensorPin); // Read analog value (0 - 1023)
+  
+  Serial.print("Analog Air Quality Value: ");
+  Serial.println(sensorValue);
+  
+  if (sensorValue > 400) {
+    Serial.println("Alert: High gas/pollution level detected!");
+  } else {
+    Serial.println("Air quality normal.");
+  }
+  
+  delay(1000); // Wait 1 second between readings
+}
+*
